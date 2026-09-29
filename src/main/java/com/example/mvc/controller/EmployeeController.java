@@ -1,27 +1,40 @@
 package com.example.mvc.controller;
 
 import com.example.mvc.dto.EmplyeeDTO;
+import com.example.mvc.services.EmployeeService;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/employee")
 public class EmployeeController {
+    private final EmployeeService employeeService;
+
+    public EmployeeController(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
+
     @GetMapping
-    public String getEmployees(@RequestParam(required = false) Integer age,
-    @RequestParam(required = false) String name){
-        return "employees with age " + age + " and name " + name;
+    public List<EmplyeeDTO> getEmployees(@RequestParam(required = false) Integer age,
+                                         @RequestParam(required = false) String name){
+        return employeeService.getEmployees();
     }
 
     @GetMapping(path="/{employeeId}")
     public EmplyeeDTO getEmployeesById( @PathVariable long employeeId){
-        return new EmplyeeDTO(employeeId,"Ashish","abc@gmail",22,LocalDate.of(2025,4,9),true);
+        return employeeService.getEmployeeById(employeeId);
+
     }
     @PostMapping
     public EmplyeeDTO createEmployee(@RequestBody EmplyeeDTO dto){
-        dto.setId(1L);
-        return dto;
+        return employeeService.createEmployee(dto);
+    }
+    @PostMapping(path="/clear")
+    public String clearEmployees(){
+        return employeeService.clearEmployees();
     }
 
 
