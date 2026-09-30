@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class EmployeeService {
@@ -20,12 +21,11 @@ public class EmployeeService {
         this.employeeRepository = employeeRepository;
     }
 
-    public EmplyeeDTO getEmployeeById(long employeeId){
-        EmployeeEntity EmployeeEntity=employeeRepository.findById(employeeId).orElse(null);
-
-       return mapper.map(EmployeeEntity, EmplyeeDTO.class);
-
-
+    public Optional<EmplyeeDTO> getEmployeeById(long employeeId){
+//        Optional<EmployeeEntity> EmployeeEntity=employeeRepository.findById(employeeId);
+//        return EmployeeEntity.map(employeeEntity -> mapper.map(employeeEntity, EmplyeeDTO.class));
+        //or
+        return employeeRepository.findById(employeeId).map(employeeEntity -> mapper.map(employeeEntity, EmplyeeDTO.class));
     }
 
     public List<EmplyeeDTO> getEmployees() {
