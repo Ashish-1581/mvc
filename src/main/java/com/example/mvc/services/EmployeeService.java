@@ -3,10 +3,13 @@ package com.example.mvc.services;
 import com.example.mvc.dto.EmplyeeDTO;
 import com.example.mvc.entities.EmployeeEntity;
 import com.example.mvc.repositories.EmployeeRepository;
+import org.springframework.util.ReflectionUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmployeeService {
@@ -41,5 +44,26 @@ public class EmployeeService {
     public String clearEmployees() {
         employeeRepository.deleteAll();
         return "Employees has been cleared";
+    }
+
+    public EmplyeeDTO UpdateEmployee(long employeeId, Map<String, Object> data) {
+        try{
+        boolean exists = employeeRepository.existsById(employeeId);
+        if(!exists){
+            return null;
+        }
+        EmployeeEntity employeeEntity=employeeRepository.findById(employeeId).orElse(null);
+        data.forEach((key,value)->{
+            Field requiredKey= ReflectionUtils.findField(EmployeeEntity.class,key);
+            requiredKey.setAccessible(true); //this is required to access private fields
+            ReflectionUtils.setField(requiredKey,employeeEntity,value);
+        });
+        EmployeeEntity updatedEmployee=employeeRepository.save(employeeEntity);
+        return mapper.map(updatedEmployee, EmplyeeDTO.class);}
+        catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
+
     }
 }

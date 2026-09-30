@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -35,6 +36,11 @@ public class EmployeeController {
     @PostMapping(path="/clear")
     public String clearEmployees(){
         return employeeService.clearEmployees();
+    }
+    @PatchMapping(path="/{employeeId}")
+    public EmplyeeDTO UpdateEmployee(@PathVariable long employeeId, @RequestBody Map<String, Object> data){
+        return employeeService.UpdateEmployee(employeeId, data);
+
     }
 
 
