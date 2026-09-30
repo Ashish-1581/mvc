@@ -2,6 +2,8 @@ package com.example.mvc.controller;
 
 import com.example.mvc.dto.EmplyeeDTO;
 import com.example.mvc.services.EmployeeService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -19,27 +21,36 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<EmplyeeDTO> getEmployees(@RequestParam(required = false) Integer age,
-                                         @RequestParam(required = false) String name){
-        return employeeService.getEmployees();
+    public ResponseEntity< List<EmplyeeDTO>> getEmployees(@RequestParam(required = false) Integer age,
+                                                        @RequestParam(required = false) String name){
+        return ResponseEntity.ok(employeeService.getEmployees());
     }
 
     @GetMapping(path="/{employeeId}")
-    public EmplyeeDTO getEmployeesById( @PathVariable long employeeId){
-        return employeeService.getEmployeeById(employeeId);
+    public ResponseEntity< EmplyeeDTO> getEmployeesById( @PathVariable long employeeId){
+
+        return ResponseEntity.ok(employeeService.getEmployeeById(employeeId));
 
     }
     @PostMapping
-    public EmplyeeDTO createEmployee(@RequestBody EmplyeeDTO dto){
-        return employeeService.createEmployee(dto);
+    public ResponseEntity< EmplyeeDTO> createEmployee(@RequestBody EmplyeeDTO dto){
+//        return ResponseEntity.ok(employeeService.createEmployee(dto));
+        //or
+        return new ResponseEntity<>(employeeService.createEmployee(dto), HttpStatus.CREATED);
     }
     @PostMapping(path="/clear")
-    public String clearEmployees(){
-        return employeeService.clearEmployees();
+    public ResponseEntity <String> clearEmployees(){
+        return ResponseEntity.ok(employeeService.clearEmployees());
     }
     @PatchMapping(path="/{employeeId}")
-    public EmplyeeDTO UpdateEmployee(@PathVariable long employeeId, @RequestBody Map<String, Object> data){
-        return employeeService.UpdateEmployee(employeeId, data);
+    public ResponseEntity< EmplyeeDTO> UpdateEmployee(@PathVariable long employeeId, @RequestBody Map<String, Object> data){
+
+        EmplyeeDTO updatedEmployee=  employeeService.UpdateEmployee(employeeId, data);
+        if(updatedEmployee == null){
+            return ResponseEntity.notFound().build();
+
+        }
+        return ResponseEntity.ok(updatedEmployee);
 
     }
 
