@@ -38,10 +38,7 @@ public class EmployeeController {
 
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<String>  handleEmployeeNotFound(NoSuchElementException e){
-        return new ResponseEntity<>("Employee not found",HttpStatus.NOT_FOUND);
-    }
+
 
     @PostMapping
     public ResponseEntity< EmplyeeDTO> createEmployee(@RequestBody @Valid EmplyeeDTO dto){
