@@ -1,5 +1,6 @@
 package com.example.mvc.controller;
 
+import com.example.mvc.Exceptions.ResourceNotFoundException;
 import com.example.mvc.dto.EmplyeeDTO;
 import com.example.mvc.services.EmployeeService;
 import jakarta.validation.Valid;
@@ -34,7 +35,7 @@ public class EmployeeController {
 
         Optional<EmplyeeDTO> employeeDTO= employeeService.getEmployeeById(employeeId);
         return employeeDTO.map(empDTO -> ResponseEntity.ok(empDTO))
-                         .orElseThrow(()-> new NoSuchElementException("employee not found"));
+                         .orElseThrow(()-> new ResourceNotFoundException("employee not found"));
 
     }
 
